@@ -12,10 +12,6 @@ from sklearn.linear_model import SGDClassifier
 
 import numpy as np
 
-# import import_ipynb
-# import our_metrics.ipynb
-# from ipynb.fs.full.our_metrics import *
-
 TRAIN_FILE = Path("./raw_data/GunViolence/train.tsv")
 DEV_FILE = Path("./raw_data/GunViolence/dev.tsv")
 TEST_FILE = Path("./raw_data/GunViolence/test.tsv")
