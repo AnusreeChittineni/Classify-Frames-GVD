@@ -67,14 +67,12 @@ def build_naive_bayes():
         An sklearn Pipeline
     """
     nb_pipeline = None
-    ##### Write code here #######
-      
+    
     nb_pipeline = Pipeline([
      ('vect', CountVectorizer()),
      ('clf', ComplementNB()),
      ])
     
-    ##### End of your work ######
     return nb_pipeline
 
 def build_logistic_regr():
@@ -86,14 +84,12 @@ def build_logistic_regr():
         An sklearn Pipeline
     """
     logistic_pipeline = None
-    ##### Write code here #######
 
     logistic_pipeline = Pipeline([
      ('vect', CountVectorizer()),
      ('clf', LogisticRegression()), 
      ])
     
-    ##### End of your work ######
     return logistic_pipeline
 
 def build_svm_pipeline():
@@ -105,14 +101,12 @@ def build_svm_pipeline():
         An sklearn Pipeline
     """
     svm_pipeline = None
-    ##### Write code here #######
 
     svm_pipeline = Pipeline([
      ('vect', CountVectorizer()),
      ('clf', SGDClassifier()),
      ])
 
-    ##### End of your work ######
     return svm_pipeline
 
 def build_own_pipeline() -> Pipeline:
@@ -124,7 +118,6 @@ def build_own_pipeline() -> Pipeline:
         An sklearn Pipeline
     """
     nn_pipeline = None
-    ##### Write code here #######
 
     nn_pipeline = Pipeline([
       ('vect', CountVectorizer()),
@@ -132,26 +125,22 @@ def build_own_pipeline() -> Pipeline:
       ('clf', MLPClassifier()) 
       ])
     
-    ##### End of your work ######
     return nn_pipeline
 
 def output_predictions(pipeline):
   
-    ##### Write code here #######
-    X_test, y_test = load_data_file(TEST_FILE) #load TEST_FILE into X_test and y_test
+    #load TEST_FILE into X_test and y_test
+    X_test, y_test = load_data_file(TEST_FILE) 
     assert(y_test is None) 
 
-    #use the above links to predict with the pipeline input
     prediction = pipeline.predict(X_test) 
 
-    # Makes datafram and writes to TSV
+    # Makes dataframe and writes to TSV
     filename = 'predictions.tsv' #name of the file (including extension)
-    df = pd.DataFrame(prediction) #create your dataframe
+    df = pd.DataFrame(prediction) #creates dataframe
 
-    #fill in the function name and parameter to write to csv.
+    #writes to csv
     df.to_csv(filename, sep="\t", index=False, header=False)
-    ##### End of your work ######
-
 
 def make_onehot(y, labels):
 
@@ -159,13 +148,8 @@ def make_onehot(y, labels):
     if len(y.shape) != 1:
         raise Exception("Currently support only 1d input to make_onehot")
 
-    ##### YOUR WORK BEGINS HERE #######
-    label_indices = {label: i for i, label in enumerate(labels)}
     # loop through the labels and create a dictionary entry for each label and it's corresponding col number
-    ###fill up label_indices here with a loop
-
-
-    ###end of filling up label_indices
+    label_indices = {label: i for i, label in enumerate(labels)}
 
     #loop through the y, and label each y with the row it corresponds to using append
     row_selector = [i for i, curr_label in enumerate(y) if curr_label in labels]
@@ -173,12 +157,12 @@ def make_onehot(y, labels):
     #use label_indices to get the column that the y belongs to and label each y with the col it corresponds to
     column_selector = [label_indices[label] for label in y if label in label_indices]
     
+    #creates an empty numpy matrix of size len(y) x len(labels)
+    onehot = np.zeros((len(y), len(labels)), dtype=int) 
+    
+    #fills in the numpy matrix with 1's at the spots of row x col
+    onehot[row_selector, column_selector] = 1 
 
-    onehot = np.zeros((len(y), len(labels)), dtype=int) #creates an empty numpy matrix of size len(y) x len(labels)
-    onehot[row_selector, column_selector] = 1 #fills in the numpy matrix with 1's at the spots of row x col
-    '''if row selector was [1,2,3] and col selector was [4,5,6] the above line would fill in 
-    [1,4] [2,5] and [3,6] with 1's
-    '''
     return onehot
 
 def check_metric_args(y_true, y_pred, average, labels):
@@ -198,7 +182,7 @@ def check_metric_args(y_true, y_pred, average, labels):
 
 
 #Each row of the matrix represents the instances in a predicted class while each column represents 
-# the instances in an actual class (or vice versa).[9] 
+# the instances in an actual class (or vice versa) 
 def get_confusion_matrix(y_true, y_pred, labels):
     m = len(y_true)
     n = len(labels)
@@ -237,13 +221,11 @@ def precision(y_true, y_pred, average, labels):
     """
     y_true, y_pred = check_metric_args(y_true, y_pred, average, labels)
 
-    # At this point, you can be sure that y_true and y_pred
-    # are one hot encoded.
+    # At this point, you can be sure that y_true and y_pred are one hot encoded.
     result = None
     m = len(y_true)
     n = len(labels)
 
-    ##### Write code here #######
     #call get_confusion_matrix function and put the result in confusion_matrix
     confusion_matrix = get_confusion_matrix(y_true, y_pred, labels)
 
@@ -261,13 +243,11 @@ def precision(y_true, y_pred, average, labels):
         result = np.mean(diag/row_sums_adjusted)
 
     else:
-        #copy your macro code here
         diag = np.diag(confusion_matrix)
         row_sums = np.sum(confusion_matrix, axis=1)
         row_sums_adjusted = np.array([1 if val == 0 else val for val in row_sums])
         result = diag/row_sums_adjusted
 
-    ##### End of your work ######
     return result
 
 def recall(y_true, y_pred, average, labels):
@@ -370,6 +350,7 @@ def main():
             y_dev_pred = pipeline.predict(X_dev)
  
             for i, average in enumerate(averages):
+        
                 #calculate precision of true dev data with predicted dev data
                 precisionCalc = precision(y_dev_true, y_dev_pred, average, LABELS)
 
